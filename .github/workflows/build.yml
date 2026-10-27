@@ -1,0 +1,29 @@
+name: Build AutoClicker
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Developer Command Prompt
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Compile Executable
+      run: |
+        rc resource.rc
+        cl /O2 /EHsc edins_autoclicker_gui.cpp resource.res user32.lib gdi32.lib winmm.lib /Fe:"Edins_AutoClicker.exe" /link /SUBSYSTEM:WINDOWS
+
+    - name: Upload Built Executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: Edins_AutoClicker
+        path: Edins_AutoClicker.exe
